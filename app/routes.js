@@ -54,18 +54,17 @@ module.exports = function (app) {
 
     //update a note
     app.post('/api/notes/:note_id', function (req, res) {
-        Note.update({
-            body: req.body.body,
-            key: req.body.key,
-            title: req.body.title,
-            done: false
-        }, function (err, note) {
-            if (err)
+        console.log('updating ' + req.params.note_id);
+        Note.findById(req.params.note_id, function(err,doc){
+            if(err){
                 res.send(err);
-
-            // get and return all the notes after you create another
-            getNotes(res);
+            } else {
+                doc.title = req.body.title;
+                doc.body = req.body.body;
+                doc.save(getNotes(res));
+            }
         });
+
     });
 
     // application -------------------------------------------------------------

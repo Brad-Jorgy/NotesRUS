@@ -39,6 +39,7 @@ angular.module('noteController', [])
 						$scope.notes = data; // assign our new list of notes
 						$scope.saveButtonText = "Add Note";
 						$scope.createOrUpdate = $scope.createNote;
+						$scope.$apply();
 					});
 		};
 

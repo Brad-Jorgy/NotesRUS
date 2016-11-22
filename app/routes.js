@@ -1,52 +1,70 @@
-var Todo = require('./models/todo');
+var Note = require('./models/note');
 
-function getTodos(res) {
-    Todo.find(function (err, todos) {
+function getNotes(res) {
+    Note.find(function (err, notes) {
 
         // if there is an error retrieving, send the error. nothing after res.send(err) will execute
         if (err) {
             res.send(err);
         }
 
-        res.json(todos); // return all todos in JSON format
+        res.json(notes); // return all notes in JSON format
     });
 };
 
 module.exports = function (app) {
 
     // api ---------------------------------------------------------------------
-    // get all todos
-    app.get('/api/todos', function (req, res) {
-        // use mongoose to get all todos in the database
-        getTodos(res);
+    // get all notes
+    app.get('/api/notes', function (req, res) {
+        // use mongoose to get all notes in the database
+        getNotes(res);
     });
 
-    // create todo and send back all todos after creation
-    app.post('/api/todos', function (req, res) {
+    // create note and send back all notes after creation
+    app.post('/api/notes', function (req, res) {
 
-        // create a todo, information comes from AJAX request from Angular
-        Todo.create({
-            text: req.body.text,
+        // create a note, information comes from AJAX request from Angular
+        Note.create({
+            body: req.body.body,
+            key: req.body.key,
+            title: req.body.title,
             done: false
-        }, function (err, todo) {
+        }, function (err, note) {
             if (err)
                 res.send(err);
 
-            // get and return all the todos after you create another
-            getTodos(res);
+            // get and return all the notes after you create another
+            getNotes(res);
         });
 
     });
 
-    // delete a todo
-    app.delete('/api/todos/:todo_id', function (req, res) {
-        Todo.remove({
-            _id: req.params.todo_id
-        }, function (err, todo) {
+    // delete a note
+    app.delete('/api/notes/:note_id', function (req, res) {
+        Note.remove({
+            _id: req.params.note_id
+        }, function (err, note) {
             if (err)
                 res.send(err);
 
-            getTodos(res);
+            getNotes(res);
+        });
+    });
+
+    //update a note
+    app.post('/api/notes/:note_id', function (req, res) {
+        Note.update({
+            body: req.body.body,
+            key: req.body.key,
+            title: req.body.title,
+            done: false
+        }, function (err, note) {
+            if (err)
+                res.send(err);
+
+            // get and return all the notes after you create another
+            getNotes(res);
         });
     });
 
